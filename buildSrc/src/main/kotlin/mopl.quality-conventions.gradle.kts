@@ -47,9 +47,7 @@ tasks.withType<JacocoReport>().configureEach {
         xml.required.set(true)
         html.required.set(true)
     }
-    afterEvaluate {
-        classDirectories.setFrom(
-            files(classDirectories.files.map { fileTree(it).exclude(jacocoExclusions) })
-        )
-    }
+    classDirectories.setFrom(
+        classDirectories.files.map { fileTree(it) { exclude(jacocoExclusions) } }
+    )
 }
