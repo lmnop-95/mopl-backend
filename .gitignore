@@ -1,0 +1,38 @@
+# Build
+build/
+
+# Gradle
+.gradle/
+.kotlin/
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# OS
+.DS_Store
+
+# Secret
+.env
+*.env.local
+*.pem
+*.key
+http/http-client.private.env.json
+
+# Java
+*.class
+*.jar
+*.war
+out/
+**/generated/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Logs
+*.log
+*.hprof
+
+# Local
+.mopl/
+*.local.md

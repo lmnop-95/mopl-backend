@@ -1,0 +1,30 @@
+module:api:
+  - changed-files:
+      - any-glob-to-any-file: applications/api/**
+
+module:core:
+  - changed-files:
+      - any-glob-to-any-file: core/**
+
+build:
+  - changed-files:
+      - any-glob-to-any-file:
+          - build.gradle.kts
+          - settings.gradle.kts
+          - gradle/**
+          - gradle.properties
+          - buildSrc/**
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file: .github/**
+
+config:
+  - changed-files:
+      - any-glob-to-any-file: config/**
+
+docs:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - docs/**

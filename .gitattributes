@@ -1,0 +1,13 @@
+# Default
+* text=auto
+
+# Shell scripts
+*.sh text eol=lf
+gradlew text eol=lf
+
+# Batch files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary
+*.jar binary

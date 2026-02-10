@@ -1,0 +1,70 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: "ko-KR"
+early_access: false
+tone_instructions: "간결하고 핵심만 짚어주는 톤. 불필요한 칭찬이나 서술 없이 실질적인 피드백만 제공할 것."
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_instructions: |
+    한국어로 PR 요약을 작성해줘:
+
+    ### 📝 Release Notes
+    - 변경된 핵심 로직과 의사결정 사항을 간결한 불렛 포인트로 요약.
+    - 'Lite & Atomic' 철학에 따라 핵심 위주로 작성할 것.
+  high_level_summary_in_walkthrough: true
+  high_level_summary_placeholder: "@coderabbitai summary"
+  review_status: true
+  collapse_walkthrough: true
+  sequence_diagrams: false
+  poem: false
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+  path_filters:
+    - "!gradle/wrapper/**"
+    - "!gradlew"
+    - "!gradlew.bat"
+    - "!.editorconfig"
+    - "!.gitattributes"
+    - "!.gitignore"
+    - "!LICENSE"
+  path_instructions:
+    - path: "**/*.java"
+      instructions: |
+        Javadoc 커버리지 관련 경고를 제외할 것.
+        이 프로젝트는 'Lite & Atomic' 철학을 따르며, 코드 자체의 명확성을 지향한다.
+
+        코드 스타일(포맷팅, import 정렬, 공백)은 Spotless와 Checkstyle이 CI에서 관리한다.
+        포맷팅 관련 지적은 리뷰에서 제외할 것.
+
+        Lombok(@Getter, @Builder, @RequiredArgsConstructor 등)은 프로젝트 표준이다.
+        Lombok 사용을 지양하라는 리뷰를 하지 말 것.
+    - path: "**/*.gradle.kts"
+      instructions: |
+        이 프로젝트는 buildSrc 컨벤션 플러그인 패턴을 사용한다.
+        allprojects/subprojects 블록으로의 전환을 제안하지 말 것.
+    - path: "config/**"
+      instructions: |
+        Checkstyle, SpotBugs, Eclipse Formatter 설정 파일이다.
+        XML 포맷팅이나 스타일에 대한 리뷰는 불필요하다.
+  tools:
+    shellcheck:
+      enabled: true
+    markdownlint:
+      enabled: true
+    yamllint:
+      enabled: true
+    gitleaks:
+      enabled: true
+chat:
+  auto_reply: true
+knowledge_base:
+  opt_out: false
+  learnings:
+    scope: "auto"
+  issues:
+    scope: "auto"
+  pull_requests:
+    scope: "auto"
