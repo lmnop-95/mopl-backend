@@ -51,17 +51,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: '**/build/reports/jacoco/test/jacocoTestReport.xml'
 
-      - name: SonarCloud analysis
-        if: >-
-          github.event_name == 'push'
-          || (github.event_name == 'pull_request'
-              && github.event.pull_request.head.repo.full_name == github.repository)
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
-        run: ./gradlew sonar
-
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v6
