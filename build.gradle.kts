@@ -20,7 +20,11 @@ tasks.register<JacocoReport>("jacocoRootReport") {
     group = "verification"
     description = "Generates aggregated JaCoCo coverage report for all modules."
 
-    dependsOn(":shared:common:test", ":applications:api:test")
+    dependsOn(
+        rootProject.childProjects.values
+            .flatMap { it.childProjects.values }
+            .map { "${it.path}:test" }
+    )
 
     executionData.setFrom(
         fileTree(rootDir) {
