@@ -2,6 +2,7 @@
 spring-boot = "4.0.2"
 spring-dependency-management = "1.1.7"
 lombok = "1.18.42"
+jspecify = "1.0.0"
 junit = "5.13.4"
 assertj = "3.27.6"
 spotless = "8.2.1"
@@ -15,6 +16,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 spotbugs = { id = "com.github.spotbugs", version.ref = "spotbugs-plugin" }
 
 [libraries]
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }

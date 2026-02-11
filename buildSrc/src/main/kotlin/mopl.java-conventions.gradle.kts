@@ -21,6 +21,7 @@ tasks.withType<Test> {
 val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 dependencies {
+    compileOnly(libs.findLibrary("jspecify").get())
     compileOnly(libs.findLibrary("lombok").get())
     annotationProcessor(libs.findLibrary("lombok").get())
     testCompileOnly(libs.findLibrary("lombok").get())
