@@ -115,9 +115,9 @@ class CursorResponseTest {
     void ofWithNegativeSizeThrowsException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> CursorResponse.of(
-                    List.of("a"), -1, 0, "NAME", SortDirection.ASCENDING,
-                    item -> item, item -> item
-                )
+                List.of("a"), -1, 0, "NAME", SortDirection.ASCENDING,
+                item -> item, item -> item
+            )
             )
             .withMessageContaining("size");
     }
