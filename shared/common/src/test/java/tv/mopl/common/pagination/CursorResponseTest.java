@@ -112,6 +112,17 @@ class CursorResponseTest {
     }
 
     @Test
+    void ofWithZeroSizeThrowsException() {
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> CursorResponse.of(
+                List.of("a"), 0, 0, "NAME", SortDirection.ASCENDING,
+                item -> item, item -> item
+            )
+            )
+            .withMessageContaining("size");
+    }
+
+    @Test
     void ofWithNegativeSizeThrowsException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> CursorResponse.of(
