@@ -8,7 +8,12 @@ public record ErrorResponse(
     String message,
     int status,
     Instant timestamp,
-    Map<String, Object> details) {
+    Map<String, Object> details
+) {
+
+    public ErrorResponse {
+        details = details == null ? Map.of() : Map.copyOf(details);
+    }
 
     public static ErrorResponse of(ErrorCode errorCode) {
         return new ErrorResponse(
@@ -16,7 +21,8 @@ public record ErrorResponse(
             errorCode.getMessage(),
             errorCode.getStatus(),
             Instant.now(),
-            Map.of());
+            Map.of()
+        );
     }
 
     public static ErrorResponse of(ErrorCode errorCode, String message) {
@@ -29,7 +35,8 @@ public record ErrorResponse(
             errorCode.getMessage(),
             errorCode.getStatus(),
             Instant.now(),
-            details);
+            details
+        );
     }
 
     public static ErrorResponse of(ErrorCode errorCode, String message, Map<String, Object> details) {

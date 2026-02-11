@@ -165,8 +165,12 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleHandlerMethodValidation(HandlerMethodValidationException e) {
         log.warn("HandlerMethodValidationException: {}", e.getMessage());
         List<String> violations = e.getParameterValidationResults().stream()
-            .flatMap(result -> result.getResolvableErrors().stream()
-                .map(error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "unknown"))
+            .flatMap(result -> {
+                String paramName = result.getMethodParameter().getParameterName();
+                return result.getResolvableErrors().stream()
+                    .map(error -> (paramName != null ? paramName : "unknown") + ": "
+                        + (error.getDefaultMessage() != null ? error.getDefaultMessage() : "unknown"));
+            })
             .toList();
         ErrorResponse response = ErrorResponse.of(ApiErrorCode.VALIDATION_FAILED, Map.of("fields", violations));
         return ResponseEntity.status(ApiErrorCode.VALIDATION_FAILED.getStatus()).body(response);
