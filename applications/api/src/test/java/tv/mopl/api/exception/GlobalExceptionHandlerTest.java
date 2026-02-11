@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validation;
+import jakarta.validation.ValidatorFactory;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
@@ -220,11 +221,11 @@ class GlobalExceptionHandlerTest {
 
         @GetMapping("/test/constraint-violation")
         void constraintViolation() {
-            throw new ConstraintViolationException(
-                Validation.buildDefaultValidatorFactory()
-                    .getValidator()
-                    .validate(new TestRequest(""))
-            );
+            try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+                throw new ConstraintViolationException(
+                    factory.getValidator().validate(new TestRequest(""))
+                );
+            }
         }
 
         @GetMapping("/test/business-exception")

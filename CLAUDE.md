@@ -40,6 +40,8 @@ infrastructure/ — 기술 구현 (persistence, redis, kafka, mail, storage, ext
 - `settings.gradle.kts`의 include() 블록은 모듈별로 분리
 - 클래스 어노테이션 순서: 메타/도구(`@Generated`) → Lombok 유틸(`@Slf4j`) → Lombok 구조(`@RequiredArgsConstructor`) → Spring 스테레오타입(`@Service`, `@RestController`)
 - 다중 파라미터 줄바꿈: 120자 이내면 한 줄, 초과하면 파라미터마다 한 줄씩
+- `var` 사용 금지 (명시적 타입 선언)
+- FQCN 사용 금지 (`import` 사용)
 - 시간 표현은 `Instant` 사용 (`LocalDateTime` 사용 금지)
 - 코드 작성·수정 후 항상 확인: 어노테이션·메서드·필드 선언 순서, 관련 코드 간 순서 일관성, 줄바꿈의 자연스러움
 - 코드 작성 완료 후 `./gradlew spotlessApply` 실행하여 import 정리 + 코드 포맷팅 적용
