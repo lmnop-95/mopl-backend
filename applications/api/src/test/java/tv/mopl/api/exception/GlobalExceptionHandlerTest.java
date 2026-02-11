@@ -6,9 +6,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import jakarta.validation.Validation;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +55,14 @@ class GlobalExceptionHandlerTest {
             .andExpect(jsonPath("$.code").value("API002"))
             .andExpect(jsonPath("$.details.method").value("POST"))
             .andExpect(jsonPath("$.details.supportedMethods").isArray());
+    }
+
+    @Test
+    void handleHttpMediaTypeNotAcceptable() throws Exception {
+        mockMvc.perform(get("/test/not-acceptable"))
+            .andExpect(status().isNotAcceptable())
+            .andExpect(jsonPath("$.code").value("API003"))
+            .andExpect(jsonPath("$.details.supportedTypes").isArray());
     }
 
     @Test
@@ -139,6 +151,14 @@ class GlobalExceptionHandlerTest {
             .andExpect(jsonPath("$.details.fields").isArray());
     }
 
+    @Test
+    void handleConstraintViolation() throws Exception {
+        mockMvc.perform(get("/test/constraint-violation"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("API012"))
+            .andExpect(jsonPath("$.details.violations").isArray());
+    }
+
     // 비즈니스
 
     @Test
@@ -191,6 +211,20 @@ class GlobalExceptionHandlerTest {
 
         @GetMapping("/test/header")
         void header(@RequestHeader("X-Custom") String custom) {
+        }
+
+        @GetMapping("/test/not-acceptable")
+        void notAcceptable() throws HttpMediaTypeNotAcceptableException {
+            throw new HttpMediaTypeNotAcceptableException(List.of(MediaType.APPLICATION_JSON));
+        }
+
+        @GetMapping("/test/constraint-violation")
+        void constraintViolation() {
+            throw new ConstraintViolationException(
+                Validation.buildDefaultValidatorFactory()
+                    .getValidator()
+                    .validate(new TestRequest(""))
+            );
         }
 
         @GetMapping("/test/business-exception")
