@@ -36,7 +36,7 @@ infrastructure/ — 기술 구현 (persistence, redis, kafka, mail, storage, ext
 - buildSrc 컨벤션 플러그인 패턴 사용 (allprojects/subprojects 사용 금지)
 - Lombok 표준 사용 (@Getter, @Builder, @RequiredArgsConstructor)
 - 커서 기반 페이지네이션 (CursorRequest/CursorResponse)
-- TDD로 개발
+- TDD로 개발: 테스트 코드를 먼저 작성하고 프로덕션 코드를 작성. 프로덕션 코드를 먼저 구상한 뒤 그것을 통과시키기 위한 테스트를 작성하지 않도록 주의
 - `settings.gradle.kts`의 include() 블록은 모듈별로 분리
 - 클래스 어노테이션 순서: 메타/도구(`@Generated`) → Lombok 유틸(`@Slf4j`) → Lombok 구조(`@RequiredArgsConstructor`) → Spring 스테레오타입(`@Service`, `@RestController`)
 - 다중 파라미터 줄바꿈: 120자 이내면 한 줄, 초과하면 파라미터마다 한 줄씩
