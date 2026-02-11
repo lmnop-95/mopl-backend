@@ -38,6 +38,11 @@ infrastructure/ — 기술 구현 (persistence, redis, kafka, mail, storage, ext
 - 커서 기반 페이지네이션 (CursorRequest/CursorResponse)
 - TDD로 개발
 - `settings.gradle.kts`의 include() 블록은 모듈별로 분리
+- 클래스 어노테이션 순서: 메타/도구(`@Generated`) → Lombok 유틸(`@Slf4j`) → Lombok 구조(`@RequiredArgsConstructor`) → Spring 스테레오타입(`@Service`, `@RestController`)
+- 다중 파라미터 줄바꿈: 120자 이내면 한 줄, 초과하면 파라미터마다 한 줄씩
+- 시간 표현은 `Instant` 사용 (`LocalDateTime` 사용 금지)
+- 코드 작성·수정 후 항상 확인: 어노테이션·메서드·필드 선언 순서, 관련 코드 간 순서 일관성, 줄바꿈의 자연스러움
+- 코드 작성 완료 후 `./gradlew spotlessApply` 실행하여 import 정리 + 코드 포맷팅 적용
 
 ## Java 25 / Spring Boot 4.x 활용 지침
 
@@ -46,10 +51,15 @@ infrastructure/ — 기술 구현 (persistence, redis, kafka, mail, storage, ext
 - **Record**: DTO, 값 객체는 class 대신 record 사용
 - **Sealed interface**: 도메인 이벤트, 에러 코드 등 타입 제한이 필요한 곳에 사용
 - **Pattern matching**: `instanceof` 체크 시 패턴 변수 사용, switch expression 활용
-- **String templates**: 문자열 조합 시 STR 템플릿 사용 (preview 활성화 시)
-- **RestClient**: 외부 API 호출 시 WebClient 대신 RestClient 사용
+- **Flexible Constructor Bodies**: `super()` 호출 전에 유효성 검증·필드 초기화 가능. static 헬퍼 메서드 불필요
+- **Stream Gatherers**: 배치 처리, 윈도우 연산 시 `Gatherers.windowFixed()`, `windowSliding()` 활용
+- **Scoped Values**: Virtual thread 환경에서 `ThreadLocal` 대신 `ScopedValue` 사용
 - **Virtual threads**: 이미 활성화됨 (`spring.threads.virtual.enabled=true`). 별도 스레드풀 생성 지양
-- **Structured concurrency**: 병렬 I/O 작업 시 활용 (preview 활성화 시)
+- **@HttpExchange**: 외부 API 호출 시 선언적 HTTP 클라이언트 인터페이스 사용 (RestClient 기반)
+- **JSpecify Null Safety**: `@NonNull`, `@Nullable`로 null 안전성 명시
+- **API 버저닝**: `@GetMapping(version = "1.0")` — URL 하드코딩 없이 선언적 버저닝
+- **Observability**: `spring-boot-starter-opentelemetry` + `@Observed`로 메트릭·트레이스 자동 수집
+- **Auto-Configuration 모듈 분리**: starter POM 동일 사용, 내부적으로 필요한 auto-configuration만 로드
 
 ## Module Dependency Rules
 

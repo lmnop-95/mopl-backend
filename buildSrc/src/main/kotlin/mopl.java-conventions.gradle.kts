@@ -25,4 +25,8 @@ dependencies {
     annotationProcessor(libs.findLibrary("lombok").get())
     testCompileOnly(libs.findLibrary("lombok").get())
     testAnnotationProcessor(libs.findLibrary("lombok").get())
+    testImplementation(platform(libs.findLibrary("junit-bom").get()))
+    testImplementation(libs.findLibrary("junit-jupiter").get())
+    testRuntimeOnly(libs.findLibrary("junit-platform-launcher").get())
+    testImplementation(libs.findLibrary("assertj-core").get())
 }
