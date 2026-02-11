@@ -1,19 +1,30 @@
 package tv.mopl.api.exception;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import tv.mopl.common.exception.CommonErrorCode;
 import tv.mopl.common.exception.NotFoundException;
 
@@ -42,6 +53,16 @@ class GlobalExceptionHandlerTest {
             .andExpect(jsonPath("$.details.supportedMethods").isArray());
     }
 
+    @Test
+    void handleHttpMediaTypeNotSupported() throws Exception {
+        mockMvc.perform(post("/test/validation")
+            .contentType(MediaType.APPLICATION_XML)
+            .content("<name>test</name>"))
+            .andExpect(status().isUnsupportedMediaType())
+            .andExpect(jsonPath("$.code").value("API004"))
+            .andExpect(jsonPath("$.details.supportedTypes").isArray());
+    }
+
     // 바인딩
 
     @Test
@@ -50,6 +71,14 @@ class GlobalExceptionHandlerTest {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code").value("API005"))
             .andExpect(jsonPath("$.details.parameter").value("number"));
+    }
+
+    @Test
+    void handleMissingServletRequestPart() throws Exception {
+        mockMvc.perform(multipart("/test/multipart"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("API006"))
+            .andExpect(jsonPath("$.details.partName").value("file"));
     }
 
     @Test
@@ -102,6 +131,14 @@ class GlobalExceptionHandlerTest {
             .andExpect(jsonPath("$.details.fields[0]").isString());
     }
 
+    @Test
+    void handleHandlerMethodValidation() throws Exception {
+        mockMvc.perform(get("/test/validated-param").param("number", "0"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("API011"))
+            .andExpect(jsonPath("$.details.fields").isArray());
+    }
+
     // 비즈니스
 
     @Test
@@ -110,6 +147,14 @@ class GlobalExceptionHandlerTest {
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.code").value("C003"))
             .andExpect(jsonPath("$.message").value("Resource not found"));
+    }
+
+    @Test
+    void handleBusinessExceptionWithDetails() throws Exception {
+        mockMvc.perform(get("/test/business-exception-with-details"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.code").value("C003"))
+            .andExpect(jsonPath("$.details.resourceId").value(42));
     }
 
     // 서버
@@ -132,6 +177,14 @@ class GlobalExceptionHandlerTest {
         void typeMismatch(@RequestParam int number) {
         }
 
+        @GetMapping("/test/validated-param")
+        void validatedParam(@RequestParam @Min(1) int number) {
+        }
+
+        @PostMapping("/test/multipart")
+        void multipart(@RequestPart("file") MultipartFile file) {
+        }
+
         @GetMapping("/test/cookie")
         void cookie(@CookieValue("SESSION") String session) {
         }
@@ -143,6 +196,11 @@ class GlobalExceptionHandlerTest {
         @GetMapping("/test/business-exception")
         void businessException() {
             throw new NotFoundException(CommonErrorCode.RESOURCE_NOT_FOUND, "Resource not found");
+        }
+
+        @GetMapping("/test/business-exception-with-details")
+        void businessExceptionWithDetails() {
+            throw new NotFoundException(CommonErrorCode.RESOURCE_NOT_FOUND, Map.of("resourceId", 42));
         }
 
         @GetMapping("/test/unexpected-exception")

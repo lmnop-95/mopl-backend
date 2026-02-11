@@ -12,6 +12,14 @@ public final class UnauthorizedException extends BusinessException {
         super(errorCode, message);
     }
 
+    public UnauthorizedException(ErrorCode errorCode, Throwable cause) {
+        super(errorCode, cause);
+    }
+
+    public UnauthorizedException(ErrorCode errorCode, String message, Throwable cause) {
+        super(errorCode, message, cause);
+    }
+
     public UnauthorizedException(ErrorCode errorCode, Map<String, Object> details) {
         super(errorCode, details);
     }

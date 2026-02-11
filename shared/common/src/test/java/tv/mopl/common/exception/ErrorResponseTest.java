@@ -20,11 +20,11 @@ class ErrorResponseTest {
 
     @Test
     void createsFromErrorCodeWithCustomMessage() {
-        ErrorResponse response = ErrorResponse.of(CommonErrorCode.INTERNAL_SERVER_ERROR, "Custom error");
+        ErrorResponse response = ErrorResponse.of(CommonErrorCode.RESOURCE_NOT_FOUND, "User not found");
 
-        assertThat(response.code()).isEqualTo("C006");
-        assertThat(response.message()).isEqualTo("Custom error");
-        assertThat(response.status()).isEqualTo(500);
+        assertThat(response.code()).isEqualTo("C003");
+        assertThat(response.message()).isEqualTo("User not found");
+        assertThat(response.status()).isEqualTo(404);
         assertThat(response.timestamp()).isNotNull();
         assertThat(response.details()).isEmpty();
     }

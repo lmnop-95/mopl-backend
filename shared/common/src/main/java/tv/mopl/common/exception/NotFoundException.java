@@ -12,6 +12,14 @@ public final class NotFoundException extends BusinessException {
         super(errorCode, message);
     }
 
+    public NotFoundException(ErrorCode errorCode, Throwable cause) {
+        super(errorCode, cause);
+    }
+
+    public NotFoundException(ErrorCode errorCode, String message, Throwable cause) {
+        super(errorCode, message, cause);
+    }
+
     public NotFoundException(ErrorCode errorCode, Map<String, Object> details) {
         super(errorCode, details);
     }

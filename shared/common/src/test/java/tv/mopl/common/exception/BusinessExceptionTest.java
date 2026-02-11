@@ -1,66 +1,90 @@
 package tv.mopl.common.exception;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 class BusinessExceptionTest {
 
     @Test
     void createsWithErrorCode() {
-        BusinessException exception = new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR);
+        BusinessException exception = new NotFoundException(CommonErrorCode.RESOURCE_NOT_FOUND);
 
-        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.INTERNAL_SERVER_ERROR);
-        assertThat(exception.getMessage()).isEqualTo(CommonErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.RESOURCE_NOT_FOUND);
+        assertThat(exception.getMessage()).isEqualTo(CommonErrorCode.RESOURCE_NOT_FOUND.getMessage());
         assertThat(exception.getDetails()).isEmpty();
     }
 
     @Test
     void createsWithErrorCodeAndCustomMessage() {
-        String customMessage = "Something went wrong";
-        BusinessException exception = new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR, customMessage);
+        BusinessException exception = new NotFoundException(CommonErrorCode.RESOURCE_NOT_FOUND, "User not found");
 
-        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.INTERNAL_SERVER_ERROR);
-        assertThat(exception.getMessage()).isEqualTo(customMessage);
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.RESOURCE_NOT_FOUND);
+        assertThat(exception.getMessage()).isEqualTo("User not found");
+        assertThat(exception.getDetails()).isEmpty();
+    }
+
+    @Test
+    void createsWithErrorCodeAndCause() {
+        RuntimeException cause = new RuntimeException("root cause");
+        BusinessException exception = new NotFoundException(CommonErrorCode.RESOURCE_NOT_FOUND, cause);
+
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.RESOURCE_NOT_FOUND);
+        assertThat(exception.getMessage()).isEqualTo(CommonErrorCode.RESOURCE_NOT_FOUND.getMessage());
+        assertThat(exception.getCause()).isEqualTo(cause);
+        assertThat(exception.getDetails()).isEmpty();
+    }
+
+    @Test
+    void createsWithErrorCodeAndMessageAndCause() {
+        RuntimeException cause = new RuntimeException("root cause");
+        BusinessException exception = new NotFoundException(
+            CommonErrorCode.RESOURCE_NOT_FOUND, "User not found",
+            cause
+        );
+
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.RESOURCE_NOT_FOUND);
+        assertThat(exception.getMessage()).isEqualTo("User not found");
+        assertThat(exception.getCause()).isEqualTo(cause);
         assertThat(exception.getDetails()).isEmpty();
     }
 
     @Test
     void createsWithErrorCodeAndDetails() {
         Map<String, Object> details = Map.of("resourceId", 42);
-        BusinessException exception = new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR, details);
+        BusinessException exception = new NotFoundException(CommonErrorCode.RESOURCE_NOT_FOUND, details);
 
-        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.INTERNAL_SERVER_ERROR);
-        assertThat(exception.getMessage()).isEqualTo(CommonErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.RESOURCE_NOT_FOUND);
+        assertThat(exception.getMessage()).isEqualTo(CommonErrorCode.RESOURCE_NOT_FOUND.getMessage());
         assertThat(exception.getDetails()).containsEntry("resourceId", 42);
     }
 
     @Test
     void createsWithErrorCodeAndMessageAndDetails() {
         Map<String, Object> details = Map.of("userId", 1);
-        BusinessException exception = new BusinessException(
-            CommonErrorCode.INTERNAL_SERVER_ERROR,
+        BusinessException exception = new NotFoundException(
+            CommonErrorCode.RESOURCE_NOT_FOUND,
             "Custom message",
-            details);
+            details
+        );
 
-        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.INTERNAL_SERVER_ERROR);
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.RESOURCE_NOT_FOUND);
         assertThat(exception.getMessage()).isEqualTo("Custom message");
         assertThat(exception.getDetails()).containsEntry("userId", 1);
     }
 
     @Test
     void notFoundExceptionIsBusinessException() {
-        NotFoundException exception = new NotFoundException(CommonErrorCode.INTERNAL_SERVER_ERROR);
+        NotFoundException exception = new NotFoundException(CommonErrorCode.RESOURCE_NOT_FOUND);
 
         assertThat(exception).isInstanceOf(BusinessException.class);
-        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.INTERNAL_SERVER_ERROR);
+        assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.RESOURCE_NOT_FOUND);
     }
 
     @Test
     void duplicateExceptionIsBusinessException() {
-        DuplicateException exception = new DuplicateException(CommonErrorCode.INVALID_INPUT_VALUE, "Already exists");
+        DuplicateException exception = new DuplicateException(CommonErrorCode.DUPLICATE_RESOURCE, "Already exists");
 
         assertThat(exception).isInstanceOf(BusinessException.class);
         assertThat(exception.getMessage()).isEqualTo("Already exists");

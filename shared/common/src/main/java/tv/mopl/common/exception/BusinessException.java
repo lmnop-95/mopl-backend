@@ -4,7 +4,8 @@ import java.util.Map;
 import lombok.Getter;
 
 @Getter
-public class BusinessException extends RuntimeException {
+public sealed class BusinessException extends RuntimeException
+    permits DuplicateException, ForbiddenException, InvalidValueException, NotFoundException, UnauthorizedException {
 
     private final ErrorCode errorCode;
     private final Map<String, Object> details;
@@ -17,6 +18,18 @@ public class BusinessException extends RuntimeException {
 
     public BusinessException(ErrorCode errorCode, String message) {
         super(message);
+        this.errorCode = errorCode;
+        this.details = Map.of();
+    }
+
+    public BusinessException(ErrorCode errorCode, Throwable cause) {
+        super(errorCode.getMessage(), cause);
+        this.errorCode = errorCode;
+        this.details = Map.of();
+    }
+
+    public BusinessException(ErrorCode errorCode, String message, Throwable cause) {
+        super(message, cause);
         this.errorCode = errorCode;
         this.details = Map.of();
     }
