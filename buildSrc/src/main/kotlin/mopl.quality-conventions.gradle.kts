@@ -9,6 +9,7 @@ val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().name
 
 spotless {
     java {
+        importOrder("\\#", "")
         eclipse().configFile(rootProject.file("config/eclipse/eclipse-java-formatter.xml"))
         removeUnusedImports()
         trimTrailingWhitespace()

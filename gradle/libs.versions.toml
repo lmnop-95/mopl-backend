@@ -2,6 +2,8 @@
 spring-boot = "4.0.2"
 spring-dependency-management = "1.1.7"
 lombok = "1.18.42"
+junit = "5.13.4"
+assertj = "3.27.6"
 spotless = "8.2.1"
 checkstyle = "13.2.0"
 spotbugs-plugin = "6.4.8"
@@ -14,3 +16,7 @@ spotbugs = { id = "com.github.spotbugs", version.ref = "spotbugs-plugin" }
 
 [libraries]
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
