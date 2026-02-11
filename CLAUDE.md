@@ -66,7 +66,7 @@ infrastructure/ — 기술 구현 (persistence, redis, kafka, mail, storage, ext
 - `applications/*` → `core/*`, `shared/*`, `infrastructure/*`
 - `core/*` → `shared/common` (only)
 - `infrastructure/*` → `core/*`, `shared/*`
-- `shared/common` → 외부 의존 없음 (순수 Java + Lombok)
+- `shared/common` → 외부 의존 없음 (순수 Java + Lombok + JSpecify)
 
 ## API Spec
 

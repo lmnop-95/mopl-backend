@@ -1,6 +1,7 @@
 package tv.mopl.common.pagination;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +109,17 @@ class CursorResponseTest {
         assertThat(response.totalCount()).isEqualTo(0);
         assertThat(response.sortBy()).isEqualTo("CREATED_AT");
         assertThat(response.sortDirection()).isEqualTo(SortDirection.DESCENDING);
+    }
+
+    @Test
+    void ofWithNegativeSizeThrowsException() {
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> CursorResponse.of(
+                    List.of("a"), -1, 0, "NAME", SortDirection.ASCENDING,
+                    item -> item, item -> item
+                )
+            )
+            .withMessageContaining("size");
     }
 
     @Test

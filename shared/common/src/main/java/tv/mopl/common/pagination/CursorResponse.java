@@ -2,11 +2,12 @@ package tv.mopl.common.pagination;
 
 import java.util.List;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 
 public record CursorResponse<T>(
     List<T> data,
-    String nextCursor,
-    String nextIdAfter,
+    @Nullable String nextCursor,
+    @Nullable String nextIdAfter,
     boolean hasNext,
     long totalCount,
     String sortBy,
@@ -26,6 +27,9 @@ public record CursorResponse<T>(
         Function<T, String> cursorExtractor,
         Function<T, String> idExtractor
     ) {
+        if (size < 0) {
+            throw new IllegalArgumentException("size must not be negative, but was: " + size);
+        }
         if (itemsWithExtra.isEmpty()) {
             return new CursorResponse<>(List.of(), null, null, false, totalCount, sortBy, sortDirection);
         }
